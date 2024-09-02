@@ -14,7 +14,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px 20px;
-  background-color: #1a73e8;
+  background-color: rgb(83, 140, 216);
   color: #ffffff;
 }
 
@@ -79,9 +79,9 @@
 
 .today {
   background-color: #e8f0fe;
-  color: #1a73e8;
+  color: rgb(83, 140, 216);
   font-weight: bold;
-  border: 2px solid #1a73e8;
+  border: 2px solid rgb(83, 140, 216);
 }
 
 .current-month {
@@ -134,7 +134,7 @@
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
-  background-color: #1a73e8;
+  background-color: rgb(83, 140, 216);
   color: white;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -142,7 +142,7 @@
 }
 
 .picker-content button:hover {
-  background-color: #1558b0;
+  background-color: rgb(83, 140, 216);
 }
 
 .event {
@@ -155,7 +155,7 @@
   position: absolute;
   bottom: 2px;
   right: 2px;
-  background-color: #1a73e8;
+  background-color: rgb(83, 140, 216);
   color: white;
   border-radius: 50%;
   width: 18px;
@@ -177,7 +177,7 @@
 
 .event-details h3 {
   margin-top: 0;
-  color: #1a73e8;
+  color: rgb(83, 140, 216);
   font-size: 18px;
   margin-bottom: 15px;
 }
@@ -208,7 +208,7 @@
 }
 
 .event a {
-  color: #1a73e8;
+  color: rgb(83, 140, 216);
   text-decoration: none;
 }
 

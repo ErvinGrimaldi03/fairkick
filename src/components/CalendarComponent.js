@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import './css/CalendarComponent.css';
 import { FaUserPlus } from 'react-icons/fa';
+import EventModal from './EventModal'; // Import the EventModal component
+import { UserContext } from './user/UserContext'; // Import UserContext to check if the user is logged in
 
 const CalendarComponent = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -8,7 +10,10 @@ const CalendarComponent = () => {
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth());
   const [selectedEvents, setSelectedEvents] = useState([]);
-  
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false); // State for managing the event modal
+  const [selectedDate, setSelectedDate] = useState(null); // State for the selected date to add an event
+  const { user } = useContext(UserContext); // Get the logged-in user from UserContext
+
   const generateLocationUrl = (place) => {
     const query = encodeURIComponent(place);
     return `https://www.google.com/maps?q=${query}`;
@@ -21,7 +26,6 @@ const CalendarComponent = () => {
       name: "Career Fair",
       place: "City Convention Center",
       time: "10:00 AM - 4:00 PM",
-      locationUrl: generateLocationUrl("City Convention Center"),
     },
     {
       id: 2,
@@ -29,7 +33,6 @@ const CalendarComponent = () => {
       name: "Tech Conference",
       place: "Tech Hub",
       time: "9:00 AM - 6:00 PM",
-      locationUrl: generateLocationUrl("Tech Hub"),
     },
     {
       id: 3,
@@ -37,15 +40,13 @@ const CalendarComponent = () => {
       name: "Tech sucasuca",
       place: "64224 Arroyo Dr",
       time: "9:00 AM - 6:00 PM",
-      locationUrl: generateLocationUrl("64224 Arroyo Dr"),
     },
-  ]);
+  ].map(event => ({
+    ...event,
+    locationUrl: generateLocationUrl(event.place)
+  })));
 
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
-
-  useEffect(() => {
-    setSelectedEvents([]);
-  }, [currentDate]);
 
   const getDaysInMonth = (date) => {
     const year = date.getFullYear();
@@ -81,8 +82,12 @@ const CalendarComponent = () => {
   };
 
   const handleDayClick = (day) => {
-    const dayEvents = getEventsForDay(day);
-    setSelectedEvents(dayEvents);
+    if (user && day) { // Check if user is logged in and the day is valid
+      const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+      setSelectedDate(date);
+      setSelectedEvents(getEventsForDay(day));
+      setIsEventModalOpen(true); // Open the modal to add a new event
+    }
   };
 
   const changeMonth = (offset) => {
@@ -111,7 +116,14 @@ const CalendarComponent = () => {
 
   const handleInviteClick = (event) => {
     alert(`Invite your group to ${event.name}`);
-    // Placeholder for the actual invite functionality
+  };
+
+  const handleSaveEvent = (newEvent) => {
+    setEvents((prevEvents) => [...prevEvents, newEvent]); // Add the new event to the list
+  };
+
+  const handleCloseModal = () => {
+    setIsEventModalOpen(false);
   };
 
   return (
@@ -165,7 +177,7 @@ const CalendarComponent = () => {
             <div
               key={index}
               className={`day ${day === null ? 'empty' : ''} ${isToday(day) ? 'today' : ''} ${dayEvents.length > 0 ? 'event' : ''}`}
-              onClick={() => day && handleDayClick(day)}
+              onClick={() => handleDayClick(day)}
             >
               <span className="day-number">{day}</span>
               {dayEvents.length > 0 && <span className="event-indicator">{dayEvents.length}</span>}
@@ -193,6 +205,14 @@ const CalendarComponent = () => {
             </div>
           ))}
         </div>
+      )}
+
+      {isEventModalOpen && (
+        <EventModal
+          selectedDate={selectedDate}
+          onClose={handleCloseModal}
+          onSave={handleSaveEvent}
+        />
       )}
     </div>
   );
